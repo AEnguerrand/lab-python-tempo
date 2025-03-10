@@ -10,9 +10,11 @@ tasks:
       - helm repo add grafana https://grafana.github.io/helm-charts
   # All taks
   install-all:
-    deps: [setup-helm, install-grafana]
+    deps: [setup-helm, install-grafana, install-tempo]
   uninstall-all:
-    deps: [uninstall-grafana]
+    deps: [uninstall-grafana, uninstall-tempo]
+  update-all:
+    deps: [update-grafana, update-tempo]
   # PortForwarding tasks
   port-forward-grafana:
     cmds:
@@ -26,3 +28,18 @@ tasks:
   uninstall-grafana:
     cmds:
       - helm uninstall grafana -n grafana
+  update-grafana:
+    cmds:
+      - helm upgrade grafana grafana/grafana -f grafana/helm-values.yaml -n grafana --wait
+  # Tempo tasks
+  install-tempo:
+    deps: [setup-helm]
+    cmds:
+      - kubectl create namespace tempo || true
+      - helm install tempo grafana/tempo-distributed -f tempo/helm-values.yaml -n tempo --wait
+  uninstall-tempo:
+    cmds:
+      - helm uninstall tempo -n tempo
+  update-tempo:
+    cmds:
+      - helm upgrade tempo grafana/tempo-distributed -f tempo/helm-values.yaml -n tempo --wait
