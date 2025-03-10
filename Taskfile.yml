@@ -1,0 +1,28 @@
+version: "3"
+
+tasks:
+  # Common tasks
+  check-kubeconfig:
+    cmds:
+      - kubectl get nodes
+  setup-helm:
+    cmds:
+      - helm repo add grafana https://grafana.github.io/helm-charts
+  # All taks
+  install-all:
+    deps: [setup-helm, install-grafana]
+  uninstall-all:
+    deps: [uninstall-grafana]
+  # PortForwarding tasks
+  port-forward-grafana:
+    cmds:
+      - kubectl port-forward svc/grafana 3000:80 -n grafana
+  # Grafana tasks
+  install-grafana:
+    deps: [setup-helm]
+    cmds:
+      - kubectl create namespace grafana || true
+      - helm install grafana grafana/grafana -f grafana/helm-values.yaml -n grafana --wait
+  uninstall-grafana:
+    cmds:
+      - helm uninstall grafana -n grafana

@@ -1,0 +1,4 @@
+# Only to use in local development
+# This file is not used in the production environment
+adminUser: "admin"
+adminPassword: "admin"
