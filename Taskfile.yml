@@ -10,11 +10,11 @@ tasks:
       - helm repo add grafana https://grafana.github.io/helm-charts
   # All taks
   install-all:
-    deps: [setup-helm, install-grafana, install-tempo]
+    deps: [setup-helm, install-grafana, install-tempo, install-grafana-alloy]
   uninstall-all:
-    deps: [uninstall-grafana, uninstall-tempo]
+    deps: [uninstall-grafana, uninstall-tempo, uninstall-grafana-alloy]
   update-all:
-    deps: [update-grafana, update-tempo]
+    deps: [update-grafana, update-tempo, update-grafana-alloy]
   # PortForwarding tasks
   port-forward-grafana:
     cmds:
@@ -43,3 +43,15 @@ tasks:
   update-tempo:
     cmds:
       - helm upgrade tempo grafana/tempo-distributed -f tempo/helm-values.yaml -n tempo --wait
+  # Grafana Alloy tasks
+  install-grafana-alloy:
+    deps: [setup-helm]
+    cmds:
+      - kubectl create namespace grafana-alloy || true
+      - helm install alloy grafana/alloy -f grafana-alloy/helm-values.yaml -n grafana-alloy --wait
+  uninstall-grafana-alloy:
+    cmds:
+      - helm uninstall alloy -n alloy
+  update-grafana-alloy:
+    cmds:
+      - helm upgrade alloy grafana/alloy -f grafana-alloy/helm-values.yaml -n grafana-alloy --wait
