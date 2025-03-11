@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  # Docker tasks
+  docker-build:
+    cmds:
+      - docker build -t lab-python-tempo/python-frontend:latest .
+  # Helm tasks
+  helm-install:
+    deps: [docker-build]
+    cmds:
+      - helm install lab-python-tempo-python-frontend helm/ --wait

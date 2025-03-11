@@ -1,0 +1,10 @@
+replicaCount: 1
+
+image:
+  repository: lab-python-tempo/python-frontend
+  pullPolicy: Never #Need to be build in local
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
